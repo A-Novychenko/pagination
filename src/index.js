@@ -1,7 +1,7 @@
 // import articlesTpl from './templates/articles.hbs';
 import './css/common.css';
 
-// import NewsApiService from './js/news-service';
+import NewsApiService from './js-components/news-api';
 // import LoadMoreBtn from './js/components/load-more-btn';
 
 const refs = {
@@ -10,23 +10,20 @@ const refs = {
   loadMoreBtn: document.querySelector('[data-action="load-more"]'),
 };
 
+const newsApiService = new NewsApiService();
+
 refs.searchForm.addEventListener('submit', onSearch);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
 
 function onSearch(e) {
   e.preventDefault();
 
-  const searchQuery = e.currentTarget.elements.query.value;
-
-  const options = {
-    headers: {
-      Authorization: 'e5d2cb43efb04745abf19514edb10ab3',
-    },
-  };
-
-  const url = `https://newsapi.org/v2/everything?q=${searchQuery}&language=ru&pageSize=5&page=1`;
-
-  fetch(url, options).then(resp => resp.json().then(console.log));
+  newsApiService.query = e.currentTarget.elements.query.value;
+  newsApiService.fetchArticles(searchQuery);
 }
 
-function onLoadMore() {}
+function onLoadMore() {
+  newsApiService.fetchArticles(searchQuery);
+}
+
+//39min
