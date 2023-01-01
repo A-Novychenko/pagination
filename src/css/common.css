@@ -38,6 +38,11 @@ img {
   display: none;
 }
 
+.button.btn-center {
+  display: flex;
+  justify-content: center;
+}
+
 /* Article List */
 .articles {
   display: grid;

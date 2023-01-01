@@ -2,28 +2,66 @@
 import './css/common.css';
 
 import NewsApiService from './js-components/news-api';
-// import LoadMoreBtn from './js/components/load-more-btn';
+import LoadMoreBtn from './js-components/load-more-btn';
 
 const refs = {
   searchForm: document.querySelector('.js-search-form'),
   articlesContainer: document.querySelector('.js-articles-container'),
-  loadMoreBtn: document.querySelector('[data-action="load-more"]'),
 };
 
 const newsApiService = new NewsApiService();
+const loadMoreBtn = new LoadMoreBtn({
+  selector: '[data-action="load-more"]',
+  hidden: true,
+});
 
 refs.searchForm.addEventListener('submit', onSearch);
-refs.loadMoreBtn.addEventListener('click', onLoadMore);
+loadMoreBtn.refs.button.addEventListener('click', fetchArticles);
 
 function onSearch(e) {
   e.preventDefault();
 
+  clearArticlesContainer();
+  newsApiService.resetPage();
   newsApiService.query = e.currentTarget.elements.query.value;
-  newsApiService.fetchArticles(searchQuery);
+  if (newsApiService.query === '') {
+    alert('Поле поиска не должно быть пустым!');
+    return;
+  }
+  fetchArticles();
 }
 
-function onLoadMore() {
-  newsApiService.fetchArticles(searchQuery);
+function fetchArticles() {
+  newsApiService.fetchArticles().then(articles => {
+    createMarkup(articles);
+    loadMoreBtn.enable();
+  });
+  loadMoreBtn.show();
+  loadMoreBtn.disable();
 }
 
-//39min
+function createMarkup(arr) {
+  const markup = arr.reduce(
+    (acc, { url, urlToImage, title, author, description }) => {
+      return (
+        acc +
+        `  <li>
+            <a href="${url}" target="_blank" rel="noopener noreferrer">
+                <article>
+                    <img src="${urlToImage}" alt="" width="480">
+                    <h2>${title}</h2>
+                    <p>Posted by: ${author}</p>
+                    <p>${description}</p>
+                </article>
+            </a>
+         </li>`
+      );
+    },
+    ''
+  );
+  refs.articlesContainer.insertAdjacentHTML('beforeend', markup);
+}
+
+function clearArticlesContainer() {
+  refs.articlesContainer.innerHTML = '';
+}
