@@ -1,8 +1,8 @@
 // import articlesTpl from './templates/articles.hbs';
-import './css/common.css';
+import './src/css/common.css';
 
-import NewsApiService from './js-components/news-api';
-import LoadMoreBtn from './js-components/load-more-btn';
+import NewsApiService from './src/js-components/news-api';
+import LoadMoreBtn from './src/js-components/load-more-btn';
 
 const refs = {
   searchForm: document.querySelector('.js-search-form'),
