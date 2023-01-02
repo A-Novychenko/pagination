@@ -20,6 +20,7 @@ export default class NewsApiService {
         if (!resp.ok) {
           throw new Error(resp.statusText);
         }
+
         return resp.json();
       })
       .then(({ articles }) => {
